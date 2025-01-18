@@ -22,6 +22,7 @@ public class DragDrop : MonoBehaviour
 
     public bool _isStart = true;
 
+    public bool Drop = false;
 
     private void Start()
     {
@@ -38,6 +39,7 @@ public class DragDrop : MonoBehaviour
     void OnMouseDown()
     {
         // Debug.Log("Я взял " + name);
+        Drop = false;
         _take.Play();
         transform.rotation = Quaternion.identity;
         transform.localScale = new Vector3(1, 1, 1);
@@ -68,6 +70,7 @@ public class DragDrop : MonoBehaviour
 
     void OnMouseUp()
     {
+        Drop = true;
         // Debug.Log("Я отпустил шарик");
         _drop.Play();
         transform.localScale = startScale;
