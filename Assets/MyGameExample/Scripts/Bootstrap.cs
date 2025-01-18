@@ -1,23 +1,37 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Bootstrap : MonoBehaviour
 {
-    [SerializeField] private GameObject _prefabLvl1;
-
+    [SerializeField] private GameObject[] _prefabLvls;
 
     [SerializeField] private Camera _camera;
 
-    private CanvasMake _canvas;
+    private GameObject _lvlPrefab;
+    private int _index;
 
     private void Awake()
     {
+      //  _lvlPrefab = Instantiate(_prefabLvls[_index]);
         Initialize();
     }
     private void Initialize()
     {
-        Instantiate(_prefabLvl1);
+        CanvasMake canvas = FindObjectOfType<CanvasMake>();
 
-        _canvas = FindObjectOfType<CanvasMake>();
-        _canvas.GetComponent<Canvas>().worldCamera = _camera;
+        canvas.GetComponent<Canvas>().worldCamera = _camera;
+    }
+
+    public void StartNextLvl()
+    {
+        Destroy(_lvlPrefab);
+        _index++;
+        Instantiate(_prefabLvls[_index]);
+        Initialize();
+    }
+
+    public void SubscripesButton(Button but)
+    {
+        but.onClick.AddListener(StartNextLvl);
     }
 }

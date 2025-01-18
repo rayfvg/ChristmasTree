@@ -4,7 +4,7 @@ using UnityEngine;
 public class CheckMatch : MonoBehaviour
 {
     public List<Slot> Slots = new List<Slot>();
-    public int CountWinner;
+  //  public int CountWinner;
 
     private bool _hasWon = false; // Переменная, чтобы победа вызывалась только один раз
 
@@ -55,7 +55,7 @@ public class CheckMatch : MonoBehaviour
         // Обрабатываем победу
         foreach (Slot slot in Slots)
         {
-            CountWinner++;
+           // CountWinner++;
             slot.Item.DeadProcess();
         }
     }

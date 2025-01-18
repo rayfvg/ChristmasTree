@@ -32,12 +32,18 @@ public class VictoryAnimation : MonoBehaviour
 
     private void OnEnable()
     {
+        Bootstrap bootstrap = FindObjectOfType<Bootstrap>();
+        NextButtonMake but = GetComponentInChildren<NextButtonMake>();
+        Button Button = but.gameObject.GetComponent<Button>();
+
+        bootstrap.SubscripesButton(Button);
+
         offscreenPosition = new Vector3(-5f, 0f, 0f);
         foreach (var slot in stars)
             slot.SetActive(false);
 
         panel.SetActive(false);
-       // panelText.gameObject.SetActive(false);
+        // panelText.gameObject.SetActive(false);
         button.gameObject.SetActive(false);
 
         StartCoroutine(AnimStart());
