@@ -1,10 +1,10 @@
 using DG.Tweening;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DragDrop : MonoBehaviour
-{
-
+{ 
     [SerializeField] private ParticleSystem _deadParticle;
     [SerializeField] private AudioSource _take;
     [SerializeField] private AudioSource _drop;
@@ -13,6 +13,8 @@ public class DragDrop : MonoBehaviour
     Vector3 offset;
     public string destinationTag = "DropArea";
     public bool IsDragging = false;
+
+    public LayerMask ignoreLayers;
 
     private Vector3 originalPosition;  // Переменная для запоминания исходной позиции объекта
     private Transform originalParent;  // Переменная для запоминания исходного родителя
@@ -24,10 +26,16 @@ public class DragDrop : MonoBehaviour
 
     public bool Drop = false;
 
+    public bool IsEnableDrag = true;
+
     private void Start()
     {
         startScale = transform.localScale;
         _startPosition = transform.position;
+    }
+    private void Update()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 3, Color.red);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -38,6 +46,9 @@ public class DragDrop : MonoBehaviour
 
     void OnMouseDown()
     {
+        if (IsEnableDrag == false)
+            return;
+
         // Debug.Log("Я взял " + name);
         Drop = false;
         _take.Play();
@@ -59,6 +70,9 @@ public class DragDrop : MonoBehaviour
 
     void OnMouseDrag()
     {
+        if(IsEnableDrag == false) 
+            return;
+
         Vector3 newPosition = MouseWorldPosition() + offset;
 
         // Устанавливаем Z-координату в 0, чтобы объект не двигался по оси Z
@@ -70,6 +84,9 @@ public class DragDrop : MonoBehaviour
 
     void OnMouseUp()
     {
+        if (IsEnableDrag == false)
+            return;
+
         Drop = true;
         // Debug.Log("Я отпустил шарик");
         _drop.Play();
@@ -113,6 +130,7 @@ public class DragDrop : MonoBehaviour
         // Восстанавливаем collider объекта
         transform.GetComponent<Collider>().enabled = true;
     }
+
 
     Vector3 MouseWorldPosition()
     {
@@ -163,6 +181,8 @@ public class DragDrop : MonoBehaviour
 
     public void DeadProcess()
     {
+        NotifyNextToy();
+
         // Сохраняем начальный размер объекта
         Vector3 originalScale = transform.localScale;
 
@@ -202,7 +222,28 @@ public class DragDrop : MonoBehaviour
             Debug.Log("y");
             transform.position = new Vector3(collider.transform.position.x, collider.transform.position.y, 3f);
             transform.parent = collider.transform;  // Устанавливаем родителя в целевой объект
+            transform.localScale = new Vector3(1, 1, 1);
             _isStart = false;
+            IsEnableDrag = true;
+        }
+    }
+
+    public void NotifyNextToy()
+    {
+        // Направление, в котором проверяем следующую игрушку
+        Vector3 direction = transform.forward;
+        float checkDistance = 5f;
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, direction, out hit, checkDistance, ~ignoreLayers))
+        {
+            Debug.Log("я пллпал в " + hit.collider.name);
+            ToysMover nextToyMover = hit.collider.GetComponent<ToysMover>();
+            if (nextToyMover != null)
+            {
+                
+                nextToyMover.MoveForwardDelay(); // Сдвигаем следующую игрушку
+            }
         }
     }
 
