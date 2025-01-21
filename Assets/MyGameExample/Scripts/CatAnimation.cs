@@ -6,4 +6,11 @@ public class CatAnimation : MonoBehaviour
     public void StartWalk() => animator.SetBool("walk", true);
 
     public void StopWalk() => animator.SetBool("walk", false);
+
+    public void Attack() => animator.SetTrigger("attack");
+
+    public void PrepareAttack()
+    {
+        animator.applyRootMotion = false;
+    }
 }

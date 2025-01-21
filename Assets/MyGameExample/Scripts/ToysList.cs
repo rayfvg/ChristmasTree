@@ -19,14 +19,6 @@ public class ToysList : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            _uiWinner.SetActive(true);
-        }if (Input.GetKeyDown(KeyCode.G))
-        {
-            _uiWinner.SetActive(false);
-        }
-
         if (_isWorking)
         {
             foreach (DragDrop toys in Toys)

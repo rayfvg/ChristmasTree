@@ -57,7 +57,7 @@ public class ToysMover : MonoBehaviour
     }
     private System.Collections.IEnumerator DelayedSlotCheck()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
 
         // Проверяем, что слот пустой и переменная Drop всё ещё true
         if (_dragDrop != null && _dragDrop.Drop == true && _targetSlot != null && _targetSlot.IsEmptySlot() == true)

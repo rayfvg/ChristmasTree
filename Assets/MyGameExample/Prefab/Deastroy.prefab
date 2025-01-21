@@ -9533,7 +9533,7 @@ GameObject:
   - component: {fileID: 570832250925526149}
   - component: {fileID: 2181954967501733166}
   m_Layer: 0
-  m_Name: Flash_round_ellow
+  m_Name: Deastroy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
