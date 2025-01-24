@@ -7,6 +7,7 @@ public class CatchToys : MonoBehaviour
     [SerializeField] private ParticleSystem _destroy;
 
     [SerializeField] private AudioSource _source;
+    [SerializeField] private AudioSource _sourceDestroy;
 
     public float TimeForEnabledTach;
 
@@ -21,7 +22,7 @@ public class CatchToys : MonoBehaviour
 
         Instantiate(_catch, transform.position, Quaternion.identity);
         _source.Play();
-        OrnamentLauncher.AddGab();
+
         Destroy(gameObject);
     }
 
@@ -31,6 +32,7 @@ public class CatchToys : MonoBehaviour
         {
             Instantiate(_destroy, transform.position, Quaternion.identity);
             Destroy(gameObject);
+            _sourceDestroy.Play();
         }
     }
 

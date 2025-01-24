@@ -6,6 +6,7 @@ using UnityEngine;
 public class CatWalker : MonoBehaviour
 {
     public TreeDropper tree;
+    public AudioSource _meow;
 
     public float areaSize = 10f; // –азмер области дл€ случайных точек
     public float speed = 2f; // Ќачальна€ скорость движени€
@@ -18,6 +19,8 @@ public class CatWalker : MonoBehaviour
     private int clickCount = 0; //  оличество кликов на кошку
 
     private CatAnimation catAnimator; // јнимации кошки
+
+    public Vector3 areaOffset;
 
     public Transform FinishTarget;
     private bool _finish = false;
@@ -73,7 +76,7 @@ public class CatWalker : MonoBehaviour
         {
             float randomX = Random.Range(-areaSize / 2, areaSize / 2);
             float randomZ = Random.Range(-areaSize / 2, areaSize / 2);
-            Vector3 potentialPoint = new Vector3(randomX, transform.position.y, randomZ);
+            Vector3 potentialPoint = new Vector3(randomX, transform.position.y, randomZ) + areaOffset;
 
             // ѕровер€ем, находитс€ ли нова€ точка дальше минимального рассто€ни€
             if (Vector3.Distance(transform.position, potentialPoint) >= minDistance)
@@ -92,6 +95,7 @@ public class CatWalker : MonoBehaviour
         if (!isMoving) return; // »гнорируем клики, если кошка уже остановлена
         if (EnabledClick == false) return;
 
+        _meow.Play();
         clickCount++;
         StopAllCoroutines(); // ќстанавливаем текущие корутины, если есть
         StartCoroutine(HandleClick());
@@ -124,9 +128,8 @@ public class CatWalker : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // –исуем область, где генерируютс€ точки
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(Vector3.zero, new Vector3(areaSize, 0.1f, areaSize));
+        Gizmos.DrawWireCube(areaOffset, new Vector3(areaSize, 0.1f, areaSize));
     }
 
     public void DropTree() => tree.DropTree();

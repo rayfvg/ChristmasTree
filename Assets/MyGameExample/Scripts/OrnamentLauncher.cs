@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 public class OrnamentLauncher : MonoBehaviour
@@ -23,25 +24,20 @@ public class OrnamentLauncher : MonoBehaviour
     public int CounterCatchToy;
 
     public GameObject FinishUi;
+    public AudioSource WinSound;
 
     private bool _working = true;
 
-
+    private void Awake()
+    {
+        ornaments = GetComponentsInChildren<CatchToys>();
+    }
     void Start()
     {
         initialRotation = transform.rotation;
 
         // Находим все Rigidbody, прикрепленные к дочерним объектам
-        ornaments = GetComponentsInChildren<CatchToys>();
-    }
-
-    private void Update()
-    {
-        if(CounterCatchToy >= 7)
-        {
-            _working = false;
-            FinishUi.SetActive(true);
-        }
+       
     }
 
     public void LaunchNextOrnament()
@@ -53,6 +49,7 @@ public class OrnamentLauncher : MonoBehaviour
             {
                 CatchToys ornament = ornaments[currentIndex];
                 ornament.EnabledTach();
+                ornament.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
 
                 if (ornament != null)
                 {
@@ -78,6 +75,11 @@ public class OrnamentLauncher : MonoBehaviour
                 // Переходим к следующей игрушке
                 currentIndex++;
             }
+
+            else
+            {
+                StartCoroutine(WinDelay());
+            }
         }
     }
 
@@ -94,9 +96,27 @@ public class OrnamentLauncher : MonoBehaviour
         shakeSequence.Append(transform.DORotateQuaternion(initialRotation, 0.2f).SetEase(Ease.OutQuad));
     }
 
-    public void AddGab()
+    private IEnumerator WinDelay()
     {
-        CounterCatchToy++;
-        Debug.Log(CounterCatchToy);
+        // Если корутина уже выполняется, выходим
+        if (!_working)
+            yield break;
+
+        yield return new WaitForSeconds(2);
+
+        _working = false; // Останавливаем дальнейшие действия
+        FinishUi.SetActive(true);
+        foreach(CatchToys t in ornaments)
+        {
+            if(t != null)
+                Destroy(t.gameObject);
+        }
+            
+
+        // Проверяем, что звук не проигрывается, прежде чем запускать
+        if (!WinSound.isPlaying)
+        {
+            WinSound.Play();
+        }
     }
 }
